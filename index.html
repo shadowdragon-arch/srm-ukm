@@ -17,24 +17,24 @@
     rel="stylesheet"
   />
 
-  <!-- Main Stylesheet (Relative path for GitHub Pages compatibility) -->
+  <!-- Main Stylesheet -->
   <link rel="stylesheet" href="./styles/main.css" />
 </head>
 <body>
 
   <!-- ========================================================================
-       NAVIGATION BAR (EXACTLY 5 MAIN SECTIONS: HOME, RAKAN, AKTIVITI, GAME, CONTACT)
+       NAVIGATION BAR (5 MAIN SECTIONS + DUAL-LANGUAGE SWITCHER BM | EN)
        ======================================================================== -->
   <header class="site-header" id="site-header">
     <div class="nav-container">
-      <a href="#home" class="brand-link" aria-label="Sekretariat Rakan Muda UKM - Laman Utama">
+      <a href="#home" class="brand-link" aria-label="Sekretariat Rakan Muda UKM">
         <div class="brand-logo-wrap">
           <img
             src="./gambar/logo/srm-logo.png"
             alt="Logo SRM UKM"
             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
           />
-          <span style="display: none;">SRM</span>
+          <span style="display: none; font-size: 0.72rem; font-weight: 800;">SRM</span>
         </div>
         <div class="brand-text-group">
           <span class="brand-name">SRM UKM</span>
@@ -42,35 +42,44 @@
         </div>
       </a>
 
-      <nav aria-label="Navigasi Utama">
+      <div class="nav-right-cluster">
+        <nav aria-label="Navigasi Utama">
+          <ul class="nav-links" id="nav-links">
+            <li><a href="#home" class="nav-link active" data-i18n="nav.home">Utama</a></li>
+            <li><a href="#rakan" class="nav-link" data-i18n="nav.rakan">Rakan</a></li>
+            <li><a href="#aktiviti" class="nav-link" data-i18n="nav.aktiviti">Aktiviti</a></li>
+            <li><a href="#game" class="nav-link" data-i18n="nav.game">Permainan</a></li>
+            <li><a href="#contact" class="nav-link" data-i18n="nav.contact">Hubungi</a></li>
+          </ul>
+        </nav>
+
+        <!-- Dual-Language Toggle Button (BM | EN) -->
+        <button
+          type="button"
+          class="lang-switch-btn"
+          id="lang-switch-btn"
+          aria-label="Switch Language / Tukar Bahasa"
+          title="Switch to English / Tukar ke Bahasa Melayu"
+        >
+          <span class="lang-pill-opt active" id="lang-opt-ms">BM</span>
+          <span class="lang-pill-opt" id="lang-opt-en">EN</span>
+        </button>
+
         <button
           type="button"
           class="mobile-menu-btn"
           id="mobile-menu-btn"
           aria-expanded="false"
           aria-controls="nav-links"
-          aria-label="Buka menu navigasi"
+          aria-label="Menu Navigasi"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="3" y1="6" x2="21" y2="6"></line>
             <line x1="3" y1="12" x2="21" y2="12"></line>
             <line x1="3" y1="18" x2="21" y2="18"></line>
           </svg>
         </button>
-
-        <ul class="nav-links" id="nav-links">
-          <li><a href="#home" class="nav-link active">Home</a></li>
-          <li><a href="#rakan" class="nav-link">Rakan</a></li>
-          <li><a href="#aktiviti" class="nav-link">Aktiviti</a></li>
-          <li>
-            <a href="#game" class="nav-link">
-              Game
-              <span class="nav-link-badge">Emoji</span>
-            </a>
-          </li>
-          <li><a href="#contact" class="nav-link">Contact</a></li>
-        </ul>
-      </nav>
+      </div>
     </div>
   </header>
 
@@ -81,127 +90,192 @@
     <section id="home" class="hero-section">
       <div class="container">
         <div class="hero-grid">
-          <!-- Hero Left Column: Typography & CTA -->
+          <!-- Hero Left Column: Editorial Typography & CTAs -->
           <div class="reveal">
-            <div class="hero-badge">
-              <span class="hero-badge-dot"></span>
-              <span>Universiti Kebangsaan Malaysia (UKM)</span>
+            <span class="eyebrow" data-i18n="hero.eyebrow">
+              Sekretariat Mahasiswa • Universiti Kebangsaan Malaysia
+            </span>
+
+            <h1 class="hero-org-title" data-i18n="hero.title">
+              SEKRETARIAT RAKAN MUDA UKM
+            </h1>
+
+            <div class="hero-tagline-bar">
+              <span class="hero-tagline-accent" aria-hidden="true"></span>
+              <span class="hero-tagline" data-i18n="hero.tagline">SRM Peneraju Persada</span>
             </div>
 
-            <h1 class="hero-org-title">SEKRETARIAT RAKAN MUDA UKM</h1>
-            <div class="hero-tagline">SRM PENERAJU PERSADA</div>
-
-            <p class="hero-description">
+            <p class="hero-description" data-i18n="hero.subtitle">
               Memperkasa potensi belia melalui kepimpinan, kreativiti, kemahiran dan penglibatan aktif dalam membina komuniti mahasiswa yang berdaya saing.
             </p>
 
             <div class="hero-actions">
-              <a href="#rakan" class="btn btn-accent">
-                <span>Terokai Rakan</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <a href="#rakan" class="btn btn-emerald">
+                <span data-i18n="hero.ctaPrimary">Terokai Portfolio Rakan</span>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                   <polyline points="12 5 19 12 12 19"></polyline>
                 </svg>
               </a>
               <a href="#aktiviti" class="btn btn-secondary">
-                <span>Lihat Aktiviti</span>
+                <span data-i18n="hero.ctaSecondary">Lihat Galeri Aktiviti</span>
               </a>
             </div>
 
-            <div class="hero-Quick-pills">
-              <span class="hero-Quick-label">Pintasan Pantas:</span>
-              <a href="#rakan" class="hero-mini-pill">✨ 9 Portfolio Rakan</a>
-              <a href="#game" class="hero-mini-pill">🎮 Main Teka Rakan!</a>
+            <div class="hero-metrics">
+              <div class="hero-metric-item">
+                <span class="hero-metric-val">09</span>
+                <span class="hero-metric-label" data-i18n="hero.statPortfolios">Portfolio Gaya Hidup</span>
+              </div>
+              <div class="hero-metric-item">
+                <span class="hero-metric-val">15+</span>
+                <span class="hero-metric-label" data-i18n="hero.statGame">Cabaran Interaktif</span>
+              </div>
+              <div class="hero-metric-item">
+                <span class="hero-metric-val" style="color: var(--srm-emerald);">UKM</span>
+                <span class="hero-metric-label" data-i18n="hero.statSpirit">Yakin Boleh!</span>
+              </div>
             </div>
           </div>
 
-          <!-- Hero Right Column: Interactive Showcase Card -->
+          <!-- Hero Right Column: Official Rakan Logo Bento Showcase (NO EMOJIS) -->
           <div class="hero-visual reveal">
             <div class="hero-showcase-card">
-              <div class="hero-logo-stage">
-                <img
-                  src="./gambar/logo/srm-logo.png"
-                  alt="Logo Rasmi Sekretariat Rakan Muda UKM"
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                />
-                <div class="hero-logo-fallback" style="display: none;">
-                  <span class="hero-logo-fallback-code">SRM UKM</span>
-                  <span class="hero-logo-fallback-sub">Peneraju Persada</span>
+              <div class="hero-showcase-header">
+                <div class="hero-crest-badge">
+                  <img
+                    src="./gambar/logo/srm-logo.png"
+                    alt="Logo Rasmi Sekretariat Rakan Muda UKM"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                  />
+                  <div style="display: none; font-weight: 800; font-size: 0.85rem; color: var(--srm-navy);">
+                    SRM
+                  </div>
+                </div>
+                <div>
+                  <h2 class="hero-showcase-title" data-i18n="hero.showcaseTitle">
+                    Ekosistem Gaya Hidup Rakan Muda
+                  </h2>
+                  <p class="hero-showcase-sub" data-i18n="hero.showcaseSub">
+                    Pilih logo portfolio untuk meneroka peranan dan fungsi secara terperinci
+                  </p>
                 </div>
               </div>
 
-              <div style="text-align: center; margin-bottom: 18px;">
-                <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 4px;">
-                  Ekosistem Gaya Hidup Rakan Muda
-                </h2>
-                <p style="font-size: 0.86rem; color: var(--text-secondary);">
-                  Pilih mana-mana ikon di bawah untuk meneroka fungsi portfolio Rakan secara terus:
-                </p>
-              </div>
-
-              <!-- Dynamically populated 9 Rakan mini-buttons -->
-              <div class="hero-Orbit-grid" id="hero-orbit-grid"></div>
+              <!-- Dynamically populated 3x3 grid using Official Rakan Logos -->
+              <div class="hero-orbit-grid" id="hero-orbit-grid"></div>
             </div>
           </div>
         </div>
 
-        <!-- SUBSECTION: ABOUT SRM UKM -->
-        <div style="margin-top: 112px;">
+        <!-- SUBSECTION: ABOUT SRM UKM (APPLE ASYMMETRIC BENTO GRID) -->
+        <div style="margin-top: 120px;">
           <div class="section-header reveal">
-            <span class="eyebrow">Mengenai Kami</span>
-            <h2 class="section-title">Memacu Potensi Mahasiswa Melalui Gaya Hidup Positif</h2>
-            <p class="section-subtitle">
-              Sekretariat Rakan Muda Universiti Kebangsaan Malaysia (SRM UKM) merupakan organisasi mahasiswa yang menterjemahkan aspirasi inisiatif Rakan Muda ke dalam persekitaran universiti melalui pelbagai program pembangunan diri, kepimpinan dan kemasyarakatan.
+            <span class="eyebrow" data-i18n="about.eyebrow">Pengenalan & Peranan</span>
+            <h2 class="section-title" data-i18n="about.title">
+              Menterjemah Aspirasi Rakan Muda Di Persada Kampus
+            </h2>
+            <p class="section-subtitle" data-i18n="about.subtitle">
+              Sekretariat Rakan Muda UKM (SRM UKM) merupakan penggerak pembangunan belia di peringkat universiti yang menyatukan kepimpinan, daya inovasi dan semangat kesukarelawanan melalui gaya hidup positif.
             </p>
           </div>
 
-          <div class="pillars-grid">
-            <article class="pillar-card reveal">
-              <div class="pillar-icon" aria-hidden="true">🚀</div>
-              <h3 class="pillar-title">Pembangunan Potensi Mahasiswa</h3>
-              <p class="pillar-desc">
-                Menyediakan platform holistik kepada mahasiswa untuk mengenal pasti bakat terpendam, membina keyakinan diri dan menyerlahkan keupayaan sebenar di luar bilik kuliah.
-              </p>
+          <div class="bento-grid">
+            <!-- Bento 01 (Span 7) -->
+            <article class="bento-card bento-span-7 reveal">
+              <div class="bento-top-row">
+                <span class="bento-index">01 / TERAS UTAMA</span>
+                <div class="bento-icon-wrap" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h3 class="bento-title" data-i18n="about.bento1Title">Pembangunan Potensi Mahasiswa</h3>
+                <p class="bento-desc" data-i18n="about.bento1Desc">
+                  Menyediakan ruang holistik di luar bilik kuliah untuk mahasiswa mengenal pasti bakat, membina keyakinan diri dan menyerlahkan potensi sebenar.
+                </p>
+              </div>
             </article>
 
-            <article class="pillar-card reveal">
-              <div class="pillar-icon" aria-hidden="true">🌟</div>
-              <h3 class="pillar-title">Penglibatan Belia Positif</h3>
-              <p class="pillar-desc">
-                Menggerakkan penyertaan aktif warga kampus dalam aktiviti yang sihat, bermanfaat dan membina jaringan komuniti mahasiswa yang saling menyokong.
-              </p>
+            <!-- Bento 02 (Span 5 - Obsidian Dark Card) -->
+            <article class="bento-card bento-card-dark bento-span-5 reveal">
+              <div class="bento-top-row">
+                <span class="bento-index">02 / KEPIMPINAN</span>
+                <div class="bento-icon-wrap" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h3 class="bento-title" data-i18n="about.bento2Title">Kepimpinan & Kerja Berpasukan</h3>
+                <p class="bento-desc" data-i18n="about.bento2Desc">
+                  Melatih pelapis pemimpin mahasiswa menerusi pengurusan organisasi yang cekap, perancangan strategik dan budaya kerja berpasukan.
+                </p>
+              </div>
             </article>
 
-            <article class="pillar-card reveal">
-              <div class="pillar-icon" aria-hidden="true">🧭</div>
-              <h3 class="pillar-title">Kepimpinan & Kerja Berpasukan</h3>
-              <p class="pillar-desc">
-                Melatih barisan pelapis pemimpin muda menerusi pengurusan organisasi, perancangan program berimpak dan budaya kerjasama berpasukan yang kukuh.
-              </p>
+            <!-- Bento 03 (Span 4) -->
+            <article class="bento-card bento-span-4 reveal">
+              <div class="bento-top-row">
+                <span class="bento-index">03 / KOMUNITI</span>
+                <div class="bento-icon-wrap" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h3 class="bento-title" data-i18n="about.bento3Title">Penglibatan Belia Positif</h3>
+                <p class="bento-desc" data-i18n="about.bento3Desc">
+                  Menggerakkan penyertaan warga kampus dalam inisiatif yang progresif serta membina jaringan komuniti mahasiswa yang inklusif.
+                </p>
+              </div>
             </article>
 
-            <article class="pillar-card reveal">
-              <div class="pillar-icon" aria-hidden="true">🎨</div>
-              <h3 class="pillar-title">Kemahiran & Kreativiti</h3>
-              <p class="pillar-desc">
-                Memupuk daya inovasi, kemahiran praktikal, literasi digital serta ekspresi seni yang relevan dengan tuntutan dunia moden dan kerjaya masa hadapan.
-              </p>
+            <!-- Bento 04 (Span 4) -->
+            <article class="bento-card bento-span-4 reveal">
+              <div class="bento-top-row">
+                <span class="bento-index">04 / INOVASI</span>
+                <div class="bento-icon-wrap" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                    <path d="M2 2l7.586 7.586"></path>
+                    <circle cx="11" cy="11" r="2"></circle>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h3 class="bento-title" data-i18n="about.bento4Title">Kemahiran & Daya Kreativiti</h3>
+                <p class="bento-desc" data-i18n="about.bento4Desc">
+                  Memupuk literasi digital, kemahiran praktikal dan ekspresi seni yang relevan dengan cabaran dunia moden.
+                </p>
+              </div>
             </article>
 
-            <article class="pillar-card reveal">
-              <div class="pillar-icon" aria-hidden="true">🤝</div>
-              <h3 class="pillar-title">Kesukarelawanan & Tanggungjawab Sosial</h3>
-              <p class="pillar-desc">
-                Menyemai nilai empati, kepedulian masyarakat dan kelestarian alam sekitar melalui penglibatan langsung dalam inisiatif kebajikan serta komuniti.
-              </p>
-            </article>
-
-            <article class="pillar-card reveal">
-              <div class="pillar-icon" aria-hidden="true">⚡</div>
-              <h3 class="pillar-title">Program Berasaskan Gaya Hidup Rakan Muda</h3>
-              <p class="pillar-desc">
-                Menyelaraskan pelaksanaan aktiviti kampus mengikut fokus portfolio Rakan Muda agar setiap minat dan kecenderungan mahasiswa mempunyai ruang perkembangan tersendiri.
-              </p>
+            <!-- Bento 05 (Span 4 - Rakan Muda Emerald Card) -->
+            <article class="bento-card bento-card-emerald bento-span-4 reveal">
+              <div class="bento-top-row">
+                <span class="bento-index">05 / PRIHATIN</span>
+                <div class="bento-icon-wrap" aria-hidden="true">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h3 class="bento-title" data-i18n="about.bento5Title">Kesukarelawanan & Tanggungjawab Sosial</h3>
+                <p class="bento-desc" data-i18n="about.bento5Desc">
+                  Menyemai nilai empati, kebajikan komuniti dan kelestarian alam sekitar melalui tindakan lapangan yang berimpak.
+                </p>
+              </div>
             </article>
           </div>
         </div>
@@ -210,38 +284,42 @@
         <div class="identity-banner reveal">
           <div class="identity-grid">
             <div>
-              <span class="eyebrow" style="background: rgba(255,255,255,0.12); color: #93c5fd;">
-                Identiti & Semangat Kami
+              <span class="eyebrow" style="background: rgba(74, 222, 128, 0.14); color: #4ade80; border-color: rgba(74, 222, 128, 0.25);" data-i18n="identity.eyebrow">
+                Identiti & Falsafah
               </span>
-              <h2 class="identity-quote">“SRM Peneraju Persada”</h2>
-              <p class="identity-lead">
-                Ungkapan <strong>SRM Peneraju Persada</strong> membawa makna aspirasi Sekretariat Rakan Muda UKM untuk tampil di barisan hadapan sebagai pemangkin kecemerlangan mahasiswa di persada universiti dan masyarakat.
+              <h2 class="identity-quote" data-i18n="identity.quote">“SRM Peneraju Persada”</h2>
+              <p class="identity-lead" data-i18n="identity.lead">
+                Ungkapan SRM Peneraju Persada melambangkan iltizam Sekretariat Rakan Muda UKM untuk tampil di barisan hadapan dalam membentuk kepemimpinan mahasiswa yang berwibawa, kreatif dan memberi impak bermakna kepada universiti serta masyarakat.
               </p>
             </div>
 
             <div class="identity-values">
               <div class="identity-value-card">
-                <h3 class="identity-value-title">Kepimpinan Berwawasan</h3>
-                <p class="identity-value-text">
-                  Membentuk mahasiswa yang berani menerajui perubahan positif dengan penuh integriti dan tanggungjawab.
+                <span class="identity-value-num">01</span>
+                <h3 class="identity-value-title" data-i18n="identity.v1Title">Kepimpinan Berwawasan</h3>
+                <p class="identity-value-text" data-i18n="identity.v1Desc">
+                  Menerajui perubahan positif dengan integriti, kematangan fikiran dan tanggungjawab sivik.
                 </p>
               </div>
               <div class="identity-value-card">
-                <h3 class="identity-value-title">Kecemerlangan Holistik</h3>
-                <p class="identity-value-text">
-                  Mengimbangi pencapaian akademik dengan penguasaan kemahiran insaniah, teknikal dan daya kreatif.
+                <span class="identity-value-num">02</span>
+                <h3 class="identity-value-title" data-i18n="identity.v2Title">Kecemerlangan Holistik</h3>
+                <p class="identity-value-text" data-i18n="identity.v2Desc">
+                  Mengimbangi kecemerlangan ilmu dengan kemahiran insaniah, keusahawanan dan kesejahteraan fizikal.
                 </p>
               </div>
               <div class="identity-value-card">
-                <h3 class="identity-value-title">Sumbangan Bermakna</h3>
-                <p class="identity-value-text">
-                  Memastikan setiap gerak kerja memberi manfaat nyata kepada pembangunan rakan sebaya dan komuniti.
+                <span class="identity-value-num">03</span>
+                <h3 class="identity-value-title" data-i18n="identity.v3Title">Sumbangan Komuniti</h3>
+                <p class="identity-value-text" data-i18n="identity.v3Desc">
+                  Memastikan setiap program meninggalkan kesan langsung kepada kesejahteraan kampus dan masyarakat.
                 </p>
               </div>
               <div class="identity-value-card">
-                <h3 class="identity-value-title">Impak Berterusan</h3>
-                <p class="identity-value-text">
-                  Menjadi wadah yang menyatukan kepelbagaian bakat belia di bawah satu ekosistem yang dinamik.
+                <span class="identity-value-num">04</span>
+                <h3 class="identity-value-title" data-i18n="identity.v4Title">Sinergi Mahasiswa</h3>
+                <p class="identity-value-text" data-i18n="identity.v4Desc">
+                  Menyatukan kepelbagaian latar belakang dan bakat di bawah satu bumbung Rakan Muda.
                 </p>
               </div>
             </div>
@@ -250,39 +328,39 @@
 
         <!-- SUBSECTION: RAKAN INTRODUCTION PREVIEW -->
         <div class="home-preview-bar reveal">
-          <div style="max-width: 680px;">
-            <span class="eyebrow">Pratonton Portfolio</span>
-            <h3 style="font-size: 1.65rem; font-weight: 800; margin-bottom: 8px;">
-              Sembilan Portfolio Rakan, Satu Aspirasi Belia
+          <div style="max-width: 700px;">
+            <span class="eyebrow" data-i18n="homePreview.rakanEyebrow">Direktori Portfolio</span>
+            <h3 style="font-size: 1.65rem; font-weight: 800; margin-bottom: 8px;" data-i18n="homePreview.rakanTitle">
+              Sembilan Portfolio, Satu Halatuju
             </h3>
-            <p style="font-size: 0.96rem; color: var(--text-secondary);">
-              Setiap Rakan mewakili fokus gaya hidup yang tersendiri — daripada teknologi digital, keusahawanan dan alam sekitar sehinggalah kesukarelawanan dan kecergasan.
+            <p style="font-size: 0.96rem; color: var(--ink-secondary);" data-i18n="homePreview.rakanDesc">
+              Setiap Rakan mempunyai fokus dan warna identiti tersendiri bagi memacu pembangunan belia secara menyeluruh.
             </p>
             <div class="home-preview-chips" id="home-rakan-preview-chips"></div>
           </div>
 
           <div>
             <a href="#rakan" class="btn btn-primary">
-              <span>Kenali Semua Rakan</span>
+              <span data-i18n="homePreview.rakanBtn">Kenali Semua Rakan</span>
               <span aria-hidden="true">→</span>
             </a>
           </div>
         </div>
 
         <!-- SUBSECTION: LATEST ACTIVITY PREVIEW -->
-        <div style="margin-top: 88px;" class="reveal">
-          <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 36px;">
+        <div style="margin-top: 96px;" class="reveal">
+          <div class="section-header-left">
             <div>
-              <span class="eyebrow">Sorotan Terkini</span>
-              <h3 style="font-size: clamp(1.65rem, 2.8vw, 2.25rem); font-weight: 800;">
-                Pratonton Aktiviti & Program
+              <span class="eyebrow" data-i18n="homePreview.actEyebrow">Sorotan Program</span>
+              <h3 style="font-size: clamp(1.7rem, 2.8vw, 2.3rem); font-weight: 800;" data-i18n="homePreview.actTitle">
+                Aktiviti & Inisiatif Terkini
               </h3>
-              <p style="font-size: 0.96rem; color: var(--text-secondary); margin-top: 4px;">
-                Dipaparkan secara automatik daripada pangkalan data aktiviti terkini SRM UKM.
+              <p style="font-size: 0.96rem; color: var(--ink-secondary); margin-top: 4px;" data-i18n="homePreview.actDesc">
+                Dikemas kini secara automatik daripada pangkalan data aktiviti SRM UKM.
               </p>
             </div>
             <a href="#aktiviti" class="btn btn-secondary btn-sm">
-              <span>Lihat Galeri Penuh</span>
+              <span data-i18n="homePreview.actBtn">Lihat Semua Aktiviti</span>
               <span aria-hidden="true">→</span>
             </a>
           </div>
@@ -293,53 +371,51 @@
     </section>
 
     <!-- ======================================================================
-         SECTION 2: RAKAN — THE MAIN FEATURE (HORIZONTAL SLIDING SHOWCASE)
+         SECTION 2: RAKAN — HORIZONTAL SLIDING SHOWCASE
          ====================================================================== -->
     <section id="rakan" class="section rakan-section">
       <div class="container">
         <div class="section-header reveal">
-          <span class="eyebrow">Eksplorasi Interaktif</span>
-          <h2 class="section-title">Kenali Portfolio Rakan Muda</h2>
-          <p class="section-subtitle">
-            Leret ke kiri atau kanan, gunakan anak panah, atau pilih terus daripada bar navigasi portfolio di bawah untuk meneroka fungsi setiap Rakan.
+          <span class="eyebrow" data-i18n="rakan.eyebrow">Eksplorasi Portfolio</span>
+          <h2 class="section-title" data-i18n="rakan.title">Gaya Hidup Rakan Muda</h2>
+          <p class="section-subtitle" data-i18n="rakan.subtitle">
+            Leret slaid ke kiri atau kanan, gunakan butang navigasi, atau klik terus pada ikon logo di bawah untuk meneroka fungsi setiap Rakan.
           </p>
         </div>
 
-        <!-- Portfolio Quick Navigation Menu (Dock) -->
+        <!-- Portfolio Quick Navigation Menu with Official Rakan Emblems -->
         <div class="rakan-dock-wrapper reveal">
-          <div class="rakan-dock" id="rakan-portfolio-dock" role="tablist" aria-label="Pilih Portfolio Rakan"></div>
+          <div class="rakan-dock" id="rakan-portfolio-dock" role="tablist" aria-label="Portfolio Rakan Muda"></div>
         </div>
       </div>
 
-      <!-- Full-Bleed Horizontal Carousel Stage -->
+      <!-- Horizontal Carousel Stage -->
       <div class="rakan-carousel-stage reveal">
         <div class="rakan-carousel-viewport" id="rakan-carousel-viewport">
-          <div class="rakan-carousel-track" id="rakan-carousel-track">
-            <!-- Populated dynamically by scripts/carousel.js from data/rakan-data.js -->
-          </div>
+          <div class="rakan-carousel-track" id="rakan-carousel-track"></div>
         </div>
 
-        <!-- Carousel Bottom Controls: Previous / Dots / Next -->
+        <!-- Carousel Bottom Controls -->
         <div class="container">
           <div class="rakan-controls-bar">
             <button
               type="button"
               class="carousel-arrow-btn"
               id="rakan-prev-btn"
-              aria-label="Rakan Sebelumnya"
+              aria-label="Previous Rakan"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="15 18 9 12 15 6"></polyline>
               </svg>
             </button>
 
-            <div class="carousel-dots" id="rakan-carousel-dots" aria-label="Indikator Slaid Rakan"></div>
+            <div class="carousel-dots" id="rakan-carousel-dots"></div>
 
             <button
               type="button"
               class="carousel-arrow-btn"
               id="rakan-next-btn"
-              aria-label="Rakan Seterusnya"
+              aria-label="Next Rakan"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="9 18 15 12 9 6"></polyline>
@@ -356,20 +432,23 @@
     <section id="aktiviti" class="section">
       <div class="container">
         <div class="section-header reveal">
-          <span class="eyebrow">Sorotan Program</span>
-          <h2 class="section-title">Galeri Aktiviti SRM UKM</h2>
-          <p class="section-subtitle">
-            Terokai inisiatif, bengkel dan program mahasiswa mengikut kategori portfolio Rakan.
+          <span class="eyebrow" data-i18n="aktiviti.eyebrow">Galeri Dokumentasi</span>
+          <h2 class="section-title" data-i18n="aktiviti.title">Aktiviti & Program SRM UKM</h2>
+          <p class="section-subtitle" data-i18n="aktiviti.subtitle">
+            Terokai penganjuran program mahasiswa mengikut kategori portfolio Rakan Muda.
           </p>
         </div>
 
         <!-- Category Filter Bar -->
-        <div class="filter-bar reveal" id="aktiviti-filter-bar" role="group" aria-label="Penapis Kategori Rakan"></div>
+        <div class="filter-bar reveal" id="aktiviti-filter-bar" role="group" aria-label="Kategori Rakan"></div>
 
-        <!-- Transparent Notice for Sample Layout Cards -->
+        <!-- Notice for Sample Layout Cards -->
         <div class="sample-notice-banner reveal" id="aktiviti-sample-notice">
           <div>
-            <strong>Nota Susun Atur Galeri:</strong> Kad bertanda <em>"CONTOH SUSUN ATUR"</em> adalah pratonton reka bentuk sementara menunggu gambar dan butiran aktiviti rasmi dimasukkan ke dalam fail <code>data/aktiviti-data.js</code>.
+            <strong data-i18n="aktiviti.sampleBannerTitle">Pratonton Susun Atur Galeri:</strong>
+            <span data-i18n="aktiviti.sampleBannerText">
+              Kad bertanda 'CONTOH SUSUN ATUR' adalah templat reka bentuk sementara menunggu gambar dan maklumat rasmi dimasukkan ke dalam fail data/aktiviti-data.js.
+            </span>
           </div>
         </div>
 
@@ -384,10 +463,10 @@
     <section id="game" class="section section-dark">
       <div class="container">
         <div class="section-header reveal">
-          <span class="eyebrow">Cabaran Interaktif</span>
-          <h2 class="section-title">TEKA RAKAN!</h2>
-          <p class="section-subtitle">
-            Kenali Rakan Melalui Emoji — Uji kefahaman anda tentang fokus dan fungsi setiap portfolio Rakan Muda.
+          <span class="eyebrow" data-i18n="game.eyebrow">Permainan Interaktif</span>
+          <h2 class="section-title" data-i18n="game.title">TEKA RAKAN!</h2>
+          <p class="section-subtitle" data-i18n="game.subtitle">
+            Kenali Rakan Melalui Emoji — Uji kefahaman anda tentang peranan setiap portfolio Rakan Muda.
           </p>
         </div>
 
@@ -397,35 +476,43 @@
             <div class="game-welcome">
               <div class="game-emoji-showcase" aria-hidden="true">
                 <span>💻</span>
-                <span style="font-size: 1.8rem; opacity: 0.5;">+</span>
+                <span style="font-size: 1.8rem; opacity: 0.45;">+</span>
                 <span>🎨</span>
               </div>
 
-              <h3 style="font-size: clamp(1.65rem, 2.8vw, 2.2rem); font-weight: 800; margin-bottom: 12px;">
-                Bersedia Untuk Cabaran Emoji?
+              <h3 style="font-size: clamp(1.65rem, 2.8vw, 2.2rem); font-weight: 800; margin-bottom: 12px;" data-i18n="game.welcomeTitle">
+                Uji Kefahaman Portfolio Rakan Muda Anda
               </h3>
-              <p style="font-size: 1rem; color: var(--text-on-dark-muted); line-height: 1.65;">
-                Setiap soalan akan memaparkan <strong>dua emoji</strong> sebagai petunjuk. Pilih portfolio Rakan yang paling tepat berdasarkan fungsi dan aktiviti utamanya!
+              <p style="font-size: 1rem; color: var(--ink-on-dark-muted); line-height: 1.65;" data-i18n="game.welcomeDesc">
+                Setiap soalan memaparkan gabungan DUA emoji sebagai petunjuk. Pilih logo portfolio Rakan yang paling tepat berdasarkan fungsi dan aktiviti utamanya.
               </p>
 
               <div class="game-rules-grid">
                 <div class="game-rule-item">
-                  <div class="game-rule-num">Langkah 01</div>
-                  <div class="game-rule-text">Perhatikan gabungan <strong>2 emoji</strong> yang dipaparkan sebagai petunjuk.</div>
+                  <div class="game-rule-num" data-i18n="game.step1Num">LANGKAH 01</div>
+                  <div class="game-rule-text" data-i18n="game.step1Text">
+                    Perhatikan gabungan 2 emoji dan petunjuk ringkas yang dipaparkan.
+                  </div>
                 </div>
                 <div class="game-rule-item">
-                  <div class="game-rule-num">Langkah 02</div>
-                  <div class="game-rule-text">Pilih satu jawapan tepat daripada pilihan portfolio Rakan yang tersedia.</div>
+                  <div class="game-rule-num" data-i18n="game.step2Num">LANGKAH 02</div>
+                  <div class="game-rule-text" data-i18n="game.step2Text">
+                    Pilih satu jawapan tepat daripada 9 pilihan logo Rakan.
+                  </div>
                 </div>
                 <div class="game-rule-item">
-                  <div class="game-rule-num">Langkah 03</div>
-                  <div class="game-rule-text">Kumpul markah daripada <strong>15 soalan rawak</strong> dan capai gelaran <em>Juara Rakan!</em></div>
+                  <div class="game-rule-num" data-i18n="game.step3Num">LANGKAH 03</div>
+                  <div class="game-rule-text" data-i18n="game.step3Text">
+                    Jawab 15 soalan rawak dan capai penarafan Juara Rakan!
+                  </div>
                 </div>
               </div>
 
-              <button type="button" class="btn btn-accent" id="game-start-btn" style="padding: 16px 36px; font-size: 1.05rem;">
-                <span>Mula Permainan (Start Game)</span>
-                <span aria-hidden="true">🎮</span>
+              <button type="button" class="btn btn-emerald" id="game-start-btn" style="padding: 16px 38px; font-size: 1.02rem;">
+                <span data-i18n="game.startBtn">Mula Permainan</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
               </button>
             </div>
           </div>
@@ -442,18 +529,18 @@
             </div>
 
             <div class="game-clue-box">
-              <div class="game-clue-prompt">Apakah portfolio Rakan yang diwakili oleh gabungan emoji ini?</div>
+              <div class="game-clue-prompt" data-i18n="game.promptText">
+                Portfolio Rakan manakah yang diwakili oleh gabungan emoji ini?
+              </div>
               <div class="game-emoji-pair">
                 <span id="game-emoji-1">💻</span>
                 <span class="game-emoji-plus">+</span>
                 <span id="game-emoji-2">🎨</span>
               </div>
-              <div class="game-clue-hint" id="game-clue-hint">Petunjuk: Teknologi + Reka Bentuk Kreatif</div>
+              <div class="game-clue-hint" id="game-clue-hint"></div>
             </div>
 
-            <div class="game-options-grid" id="game-options-grid" role="group" aria-label="Pilihan Jawapan Rakan">
-              <!-- Populated dynamically by scripts/game.js -->
-            </div>
+            <div class="game-options-grid" id="game-options-grid" role="group"></div>
 
             <!-- Immediate Educational Feedback Box -->
             <div class="game-feedback-box" id="game-feedback-box" aria-live="polite">
@@ -461,7 +548,7 @@
                 <div class="game-feedback-title" id="game-feedback-title"></div>
                 <div class="game-feedback-text" id="game-feedback-desc"></div>
               </div>
-              <button type="button" class="btn btn-accent btn-sm" id="game-next-btn">
+              <button type="button" class="btn btn-emerald btn-sm" id="game-next-btn">
                 Soalan Seterusnya →
               </button>
             </div>
@@ -475,23 +562,22 @@
                 <span class="game-score-total" id="game-final-total">daripada 15 soalan</span>
               </div>
 
-              <div class="game-tier-badge" id="game-tier-badge">🏆 Juara Rakan!</div>
+              <div class="game-tier-badge" id="game-tier-badge">Juara Rakan!</div>
 
-              <h3 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 12px;">
-                Permainan Tamat!
+              <h3 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 12px;" data-i18n="game.resultTitle">
+                Cabaran Selesai!
               </h3>
               <p
                 id="game-tier-message"
-                style="font-size: 1rem; color: var(--text-on-dark-muted); line-height: 1.65; margin-bottom: 32px;"
+                style="font-size: 1rem; color: var(--ink-on-dark-muted); line-height: 1.65; margin-bottom: 32px;"
               ></p>
 
               <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
-                <button type="button" class="btn btn-accent" id="game-restart-btn">
-                  <span>Main Semula (Play Again)</span>
-                  <span aria-hidden="true">🔄</span>
+                <button type="button" class="btn btn-emerald" id="game-restart-btn">
+                  <span data-i18n="game.playAgainBtn">Main Semula</span>
                 </button>
                 <a href="#rakan" class="btn btn-secondary">
-                  <span>Ulang Kaji Seksyen Rakan</span>
+                  <span data-i18n="game.reviewRakanBtn">Ulang Kaji Seksyen Rakan</span>
                 </a>
               </div>
             </div>
@@ -501,66 +587,86 @@
     </section>
 
     <!-- ======================================================================
-         SECTION 5: CONTACT
+         SECTION 5: CONTACT (INSTAGRAM & TIKTOK @srmukm)
          ====================================================================== -->
-    <section id="contact" class="section section-alt">
+    <section id="contact" class="section section-surface">
       <div class="container">
         <div class="section-header reveal">
-          <span class="eyebrow">Hubungi & Ikuti Kami</span>
-          <h2 class="section-title">Kekal Berhubung Bersama SRM UKM</h2>
-          <p class="section-subtitle">
+          <span class="eyebrow" data-i18n="contact.eyebrow">Saluran Rasmi</span>
+          <h2 class="section-title" data-i18n="contact.title">Hubungi & Ikuti SRM UKM</h2>
+          <p class="section-subtitle" data-i18n="contact.subtitle">
             Ikuti perkembangan dan aktiviti kami di media sosial!
           </p>
         </div>
 
         <div class="social-cards-grid reveal">
-          <!-- Instagram Card -->
-          <article class="social-card" id="contact-placeholder-instagram">
+          <!-- Official Instagram Card -->
+          <article class="social-card">
             <div>
-              <div class="social-icon-box social-icon-instagram" aria-hidden="true">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                </svg>
+              <div class="social-card-top">
+                <div class="social-icon-box social-icon-instagram" aria-hidden="true">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                  </svg>
+                </div>
+                <span class="social-handle-tag" id="contact-ig-handle">@srmukm</span>
               </div>
-              <h3 class="social-platform-name">Instagram Rasmi</h3>
-              <span class="social-handle-tag" id="contact-ig-handle">
-                [PLACEHOLDER: Kemaskini di data/site-config.js]
-              </span>
-              <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">
-                Ikuti perkembangan terkini, hebahan program, poster aktiviti dan sorotan gambar rasmi Sekretariat Rakan Muda UKM di Instagram.
+
+              <h3 class="social-platform-name" data-i18n="contact.igTitle">Instagram Rasmi</h3>
+              <p
+                id="contact-ig-desc"
+                style="font-size: 0.95rem; color: var(--ink-secondary); line-height: 1.65;"
+              >
+                Ikuti perkembangan terkini, hebahan program rasmi, sorotan aktiviti dan pengumuman terkini SRM UKM di Instagram.
               </p>
             </div>
 
             <div>
-              <a href="#contact" id="contact-ig-link" class="btn btn-primary btn-sm">
-                <span>Buka Instagram SRM UKM</span>
+              <a
+                href="https://www.instagram.com/srmukm/"
+                id="contact-ig-link"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-primary btn-sm"
+              >
+                <span data-i18n="contact.igBtn">Layari Instagram @srmukm</span>
                 <span aria-hidden="true">↗</span>
               </a>
             </div>
           </article>
 
-          <!-- TikTok Card -->
-          <article class="social-card" id="contact-placeholder-tiktok">
+          <!-- Official TikTok Card -->
+          <article class="social-card">
             <div>
-              <div class="social-icon-box social-icon-tiktok" aria-hidden="true">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
-                </svg>
+              <div class="social-card-top">
+                <div class="social-icon-box social-icon-tiktok" aria-hidden="true">
+                  <svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
+                  </svg>
+                </div>
+                <span class="social-handle-tag" id="contact-tt-handle">@srmukm</span>
               </div>
-              <h3 class="social-platform-name">TikTok Rasmi</h3>
-              <span class="social-handle-tag" id="contact-tt-handle">
-                [PLACEHOLDER: Kemaskini di data/site-config.js]
-              </span>
-              <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">
-                Tonton kandungan video kreatif, rangkuman kemeriahan aktiviti kampus dan perkongsian santai mahasiswa bersama SRM UKM di TikTok.
+
+              <h3 class="social-platform-name" data-i18n="contact.ttTitle">TikTok Rasmi</h3>
+              <p
+                id="contact-tt-desc"
+                style="font-size: 0.95rem; color: var(--ink-secondary); line-height: 1.65;"
+              >
+                Tonton kandungan video kreatif, rangkuman suasana program kampus dan perkongsian interaktif mahasiswa di TikTok.
               </p>
             </div>
 
             <div>
-              <a href="#contact" id="contact-tt-link" class="btn btn-primary btn-sm">
-                <span>Buka TikTok SRM UKM</span>
+              <a
+                href="https://www.tiktok.com/@srmukm"
+                id="contact-tt-link"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-primary btn-sm"
+              >
+                <span data-i18n="contact.ttBtn">Layari TikTok @srmukm</span>
                 <span aria-hidden="true">↗</span>
               </a>
             </div>
@@ -577,52 +683,74 @@
     <div class="container">
       <div class="footer-grid">
         <div>
-          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
-            <div class="brand-logo-wrap" style="background: #1e293b;">
+          <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
+            <div class="brand-logo-wrap" style="background: #ffffff;">
               <img
                 src="./gambar/logo/srm-logo.png"
                 alt="Logo SRM UKM"
                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
               />
-              <span style="display: none;">SRM</span>
+              <span style="display: none; color: #0f172a; font-weight: 800; font-size: 0.72rem;">SRM</span>
             </div>
             <div>
               <div style="font-weight: 800; font-size: 1.05rem; color: #ffffff;">
                 SEKRETARIAT RAKAN MUDA UKM
               </div>
-              <div style="font-size: 0.8rem; color: #93c5fd; font-weight: 600;">
+              <div style="font-size: 0.8rem; color: #4ade80; font-weight: 600;">
                 “SRM Peneraju Persada”
               </div>
             </div>
           </div>
-          <p style="font-size: 0.9rem; color: #9ca3af; max-width: 420px; line-height: 1.65;">
+          <p
+            style="font-size: 0.9rem; color: #94a3b8; max-width: 420px; line-height: 1.65;"
+            data-i18n="contact.footerDesc"
+          >
             Memperkasa potensi mahasiswa Universiti Kebangsaan Malaysia melalui kepimpinan, kreativiti, kemahiran dan penglibatan aktif berteraskan gaya hidup Rakan Muda.
           </p>
         </div>
 
         <div>
-          <h3 class="footer-title">Navigasi Laman</h3>
+          <h3 class="footer-title" data-i18n="contact.footerNavTitle">Navigasi Utama</h3>
           <ul class="footer-links">
-            <li><a href="#home">Home (Laman Utama)</a></li>
-            <li><a href="#rakan">Rakan (9 Portfolio)</a></li>
-            <li><a href="#aktiviti">Aktiviti & Program</a></li>
-            <li><a href="#game">Game: Teka Rakan!</a></li>
-            <li><a href="#contact">Contact (Hubungi Kami)</a></li>
+            <li><a href="#home" data-i18n="nav.home">Utama</a></li>
+            <li><a href="#rakan" data-i18n="nav.rakan">Rakan</a></li>
+            <li><a href="#aktiviti" data-i18n="nav.aktiviti">Aktiviti</a></li>
+            <li><a href="#game" data-i18n="nav.game">Permainan</a></li>
+            <li><a href="#contact" data-i18n="nav.contact">Hubungi</a></li>
           </ul>
         </div>
 
         <div>
-          <h3 class="footer-title">Media Sosial Rasmi</h3>
+          <h3 class="footer-title" data-i18n="contact.footerSocialTitle">Pautan Rasmi</h3>
           <ul class="footer-links">
-            <li><a href="#contact" id="footer-ig-link">Instagram SRM UKM</a></li>
-            <li><a href="#contact" id="footer-tt-link">TikTok SRM UKM</a></li>
+            <li>
+              <a
+                href="https://www.instagram.com/srmukm/"
+                id="footer-ig-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Instagram (@srmukm)
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.tiktok.com/@srmukm"
+                id="footer-tt-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                TikTok (@srmukm)
+              </a>
+            </li>
           </ul>
         </div>
       </div>
 
       <div class="footer-bottom">
         <div>
-          &copy; <span id="current-year">2026</span> Sekretariat Rakan Muda Universiti Kebangsaan Malaysia (SRM UKM). Hak Cipta Terpelihara.
+          &copy; <span id="current-year">2026</span> Sekretariat Rakan Muda Universiti Kebangsaan Malaysia (SRM UKM).
+          <span data-i18n="contact.rights">Hak Cipta Terpelihara.</span>
         </div>
         <div>SRM Peneraju Persada</div>
       </div>
@@ -630,7 +758,7 @@
   </footer>
 
   <!-- ========================================================================
-       EXPANDED DETAIL MODAL (USED FOR BOTH RAKAN & AKTIVITI DETAILS)
+       EXPANDED DETAIL MODAL
        ======================================================================== -->
   <div
     class="modal-backdrop"
@@ -645,7 +773,7 @@
         type="button"
         class="modal-close-btn"
         id="detail-modal-close"
-        aria-label="Tutup paparan"
+        aria-label="Close"
       >
         ✕
       </button>
@@ -654,7 +782,7 @@
   </div>
 
   <!-- ========================================================================
-       MODULAR DATA & SCRIPTS (Relative paths for GitHub Pages compatibility)
+       MODULAR DATA & SCRIPTS
        ======================================================================== -->
   <script src="./data/site-config.js"></script>
   <script src="./data/rakan-data.js"></script>

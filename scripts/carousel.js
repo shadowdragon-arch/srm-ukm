@@ -2,13 +2,8 @@
  * ============================================================================
  * SRM UKM - HORIZONTAL RAKAN CAROUSEL CONTROLLER (carousel.js)
  * ============================================================================
- * Menyokong:
- * 1. Butang anak panah Sebelum / Seterusnya.
- * 2. Leretan jari (touch swipe) di peranti mudah alih & seretan tetikus (mouse drag).
- * 3. Butang indikator titik (dot indicators).
- * 4. Menu pilihan pantas portfolio Rakan (Rakan Dock).
- * 5. Navigasi papan kekunci (ArrowLeft / ArrowRight) apabila fokus berada di seksyen Rakan.
- * 6. Kad berpusat (centred featured card) dengan kad bersebelahan kelihatan separa.
+ * Menyokong Dwi-Bahasa (BM & EN) secara langsung serta memaparkan logo rasmi
+ * setiap portfolio Rakan pada Dock Navigasi dan Kad Slaid.
  */
 
 (function () {
@@ -17,6 +12,7 @@
   let startX = 0;
   let currentTranslate = 0;
   let dragDelta = 0;
+  let eventsBound = false;
 
   let viewportEl = null;
   let trackEl = null;
@@ -25,18 +21,43 @@
   let prevBtn = null;
   let nextBtn = null;
 
+  function getLang() {
+    return (window.SRM_APP && window.SRM_APP.getLang()) || "ms";
+  }
+
+  function localize(field) {
+    if (!field) return "";
+    if (typeof field === "string") return field;
+    const lang = getLang();
+    return field[lang] || field.ms || "";
+  }
+
+  function getDict() {
+    const lang = getLang();
+    return (
+      (window.SRM_CONFIG &&
+        window.SRM_CONFIG.i18n &&
+        window.SRM_CONFIG.i18n[lang] &&
+        window.SRM_CONFIG.i18n[lang].rakan) ||
+      {}
+    );
+  }
+
   function renderLogoMarkup(rakan) {
+    const nameText = localize(rakan.name);
     return `
       <div class="rakan-logo-box" style="--card-light: ${rakan.accentLight}; --card-accent: ${rakan.accentColor};">
         <img
           src="${rakan.logo}"
-          alt="Logo ${rakan.name}"
+          alt="${nameText}"
           loading="lazy"
           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
         />
         <div class="rakan-logo-fallback" style="display: none;">
-          <span class="rakan-logo-fallback-emoji" aria-hidden="true">${rakan.fallbackEmoji}</span>
-          <span class="rakan-logo-fallback-tag">${rakan.shortName}</span>
+          <span style="font-size: 1.5rem; font-weight: 800;">${rakan.number}</span>
+          <span style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px;">
+            ${localize(rakan.shortName)}
+          </span>
         </div>
       </div>
     `;
@@ -44,6 +65,8 @@
 
   function buildCarouselDOM() {
     const rakanList = window.RAKAN_DATA || [];
+    const dict = getDict();
+
     viewportEl = document.getElementById("rakan-carousel-viewport");
     trackEl = document.getElementById("rakan-carousel-track");
     dockEl = document.getElementById("rakan-portfolio-dock");
@@ -53,59 +76,73 @@
 
     if (!trackEl || !rakanList.length) return;
 
-    // 1. Render Portfolio Quick Navigation Dock
+    // 1. Render Portfolio Quick Navigation Dock with Official Rakan Emblems
     if (dockEl) {
       dockEl.innerHTML = rakanList
-        .map(
-          (rakan, idx) => `
-          <button
-            type="button"
-            class="rakan-dock-btn ${idx === 0 ? "active" : ""}"
-            data-rakan-index="${idx}"
-            style="--dock-accent: ${rakan.accentColor};"
-            aria-label="Pilih ${rakan.name}"
-          >
-            <span class="rakan-dock-dot"></span>
-            <span>${rakan.shortName}</span>
-          </button>
-        `
-        )
+        .map((rakan, idx) => {
+          const shortName = localize(rakan.shortName);
+          const fullName = localize(rakan.name);
+          return `
+            <button
+              type="button"
+              class="rakan-dock-btn ${idx === currentIndex ? "active" : ""}"
+              data-rakan-index="${idx}"
+              style="--dock-accent: ${rakan.accentColor};"
+              aria-label="${fullName}"
+            >
+              <img
+                src="${rakan.logo}"
+                alt=""
+                class="rakan-dock-emblem"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';"
+              />
+              <span class="rakan-dock-num-badge" style="display: none;">${rakan.number}</span>
+              <span>${shortName}</span>
+            </button>
+          `;
+        })
         .join("");
     }
 
     // 2. Render Horizontal Showcase Cards
     trackEl.innerHTML = rakanList
       .map((rakan, idx) => {
-        const previewFunctions = rakan.functions.slice(0, 4);
+        const functionsArr = localize(rakan.functions) || [];
+        const examplesArr = localize(rakan.examples) || [];
+        const previewFunctions = functionsArr.slice(0, 4);
+        const nameText = localize(rakan.name);
+        const focusText = localize(rakan.coreFocus);
+        const descText = localize(rakan.shortDescription);
+
         return `
           <article
-            class="rakan-card ${idx === 0 ? "is-active" : ""}"
+            class="rakan-card ${idx === currentIndex ? "is-active" : ""}"
             data-card-index="${idx}"
             style="--card-accent: ${rakan.accentColor}; --card-light: ${rakan.accentLight};"
-            aria-label="${rakan.name}"
+            aria-label="${nameText}"
           >
             <div>
               <div class="rakan-card-top">
                 ${renderLogoMarkup(rakan)}
                 <div>
                   <div class="rakan-meta-header">
-                    <span class="rakan-number-pill">PORTFOLIO ${rakan.number}</span>
-                    <span class="rakan-focus-tag">${rakan.coreFocus}</span>
+                    <span class="rakan-number-pill">${dict.portfolioLabel || "PORTFOLIO"} ${rakan.number}</span>
+                    <span class="rakan-focus-tag">${focusText}</span>
                   </div>
-                  <h3 class="rakan-card-title">${rakan.name}</h3>
-                  <p class="rakan-card-desc">${rakan.shortDescription}</p>
+                  <h3 class="rakan-card-title">${nameText}</h3>
+                  <p class="rakan-card-desc">${descText}</p>
                 </div>
               </div>
 
               <div class="rakan-card-columns">
                 <div>
-                  <div class="rakan-col-label">Fungsi Utama</div>
+                  <div class="rakan-col-label">${dict.mainFunctionsLabel || "Fungsi Utama"}</div>
                   <ul class="rakan-func-list">
                     ${previewFunctions
                       .map(
                         (fn) => `
                         <li>
-                          <span class="rakan-func-bullet" aria-hidden="true">•</span>
+                          <span class="rakan-func-check" aria-hidden="true">✓</span>
                           <span>${fn}</span>
                         </li>
                       `
@@ -114,9 +151,9 @@
                   </ul>
                 </div>
                 <div>
-                  <div class="rakan-col-label">Contoh Aktiviti</div>
+                  <div class="rakan-col-label">${dict.activityExamplesLabel || "Contoh Aktiviti"}</div>
                   <div class="rakan-example-chips">
-                    ${rakan.examples
+                    ${examplesArr
                       .map((ex) => `<span class="rakan-example-chip">${ex}</span>`)
                       .join("")}
                   </div>
@@ -125,11 +162,11 @@
             </div>
 
             <div class="rakan-card-footer">
-              <span style="font-size: 0.84rem; font-weight: 600; color: var(--text-muted);">
+              <span style="font-size: 0.84rem; font-weight: 600; color: var(--ink-muted);">
                 ${
                   rakan.isConfigured
-                    ? "Klik untuk penerangan penuh & semua fungsi portfolio"
-                    : "Slot Boleh Dikonfigurasi (Kemaskini di data/rakan-data.js)"
+                    ? dict.cardFooterHint || ""
+                    : dict.cardFooterPlaceholderHint || ""
                 }
               </span>
               <button
@@ -137,8 +174,8 @@
                 class="rakan-detail-btn"
                 data-open-rakan-modal="${rakan.id}"
               >
-                <span>Kenali Rakan</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <span>${dict.exploreBtn || "Kenali Rakan"}</span>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                   <polyline points="12 5 19 12 12 19"></polyline>
                 </svg>
@@ -156,9 +193,9 @@
           (rakan, idx) => `
           <button
             type="button"
-            class="carousel-dot ${idx === 0 ? "active" : ""}"
+            class="carousel-dot ${idx === currentIndex ? "active" : ""}"
             data-dot-index="${idx}"
-            aria-label="Pergi ke slaid ${rakan.name}"
+            aria-label="${localize(rakan.name)}"
           ></button>
         `
         )
@@ -173,7 +210,6 @@
     const cards = Array.from(trackEl.querySelectorAll(".rakan-card"));
     if (!cards.length) return;
 
-    // Clamp index
     if (currentIndex < 0) currentIndex = 0;
     if (currentIndex >= cards.length) currentIndex = cards.length - 1;
 
@@ -182,7 +218,6 @@
     const cardWidth = activeCard.offsetWidth;
     const cardLeft = activeCard.offsetLeft;
 
-    // Center the active card inside the viewport so neighbouring cards peek on both sides
     const targetTranslate = (viewportWidth - cardWidth) / 2 - cardLeft;
     currentTranslate = targetTranslate;
 
@@ -194,21 +229,17 @@
 
     trackEl.style.transform = `translate3d(${targetTranslate}px, 0, 0)`;
 
-    // Update active state on cards
     cards.forEach((card, idx) => {
       card.classList.toggle("is-active", idx === currentIndex);
     });
 
-    // Update dock buttons
     if (dockEl) {
       const dockBtns = dockEl.querySelectorAll(".rakan-dock-btn");
       dockBtns.forEach((btn, idx) => {
-        const isActive = idx === currentIndex;
-        btn.classList.toggle("active", isActive);
+        btn.classList.toggle("active", idx === currentIndex);
       });
     }
 
-    // Update dots
     if (dotsEl) {
       const dots = dotsEl.querySelectorAll(".carousel-dot");
       dots.forEach((dot, idx) => {
@@ -216,11 +247,9 @@
       });
     }
 
-    // Update arrow disabled states
     if (prevBtn) prevBtn.disabled = currentIndex === 0;
     if (nextBtn) nextBtn.disabled = currentIndex === cards.length - 1;
 
-    // Update CSS variable for active Rakan colour
     const activeRakan = rakanList[currentIndex];
     if (activeRakan) {
       document.documentElement.style.setProperty("--active-rakan-color", activeRakan.accentColor);
@@ -246,7 +275,8 @@
   }
 
   function bindEvents() {
-    if (!viewportEl || !trackEl) return;
+    if (eventsBound || !viewportEl || !trackEl) return;
+    eventsBound = true;
 
     if (prevBtn) {
       prevBtn.addEventListener("click", () => goToSlide(currentIndex - 1));
@@ -274,9 +304,8 @@
       });
     }
 
-    // Clicking a neighbouring non-active card slides directly to it
     trackEl.addEventListener("click", (e) => {
-      if (Math.abs(dragDelta) > 12) return; // Ignore click if user was dragging
+      if (Math.abs(dragDelta) > 12) return;
       const detailBtn = e.target.closest("[data-open-rakan-modal]");
       if (detailBtn) {
         const rakanId = detailBtn.getAttribute("data-open-rakan-modal");
@@ -295,7 +324,6 @@
       }
     });
 
-    // Pointer / Touch Dragging Support
     function onPointerDown(clientX) {
       isDragging = true;
       startX = clientX;
@@ -316,7 +344,7 @@
       viewportEl.classList.remove("is-dragging");
 
       const threshold = 60;
-      if (dragDelta < -threshold && currentIndex < (window.RAKAN_DATA.length - 1)) {
+      if (dragDelta < -threshold && currentIndex < window.RAKAN_DATA.length - 1) {
         goToSlide(currentIndex + 1);
       } else if (dragDelta > threshold && currentIndex > 0) {
         goToSlide(currentIndex - 1);
@@ -329,7 +357,6 @@
       }, 50);
     }
 
-    // Mouse events
     viewportEl.addEventListener("mousedown", (e) => {
       if (e.target.closest("button")) return;
       onPointerDown(e.clientX);
@@ -337,7 +364,6 @@
     window.addEventListener("mousemove", (e) => onPointerMove(e.clientX));
     window.addEventListener("mouseup", onPointerUp);
 
-    // Touch events
     viewportEl.addEventListener(
       "touchstart",
       (e) => {
@@ -358,7 +384,6 @@
     );
     viewportEl.addEventListener("touchend", onPointerUp);
 
-    // Keyboard navigation when Rakan section is in view or focused
     document.addEventListener("keydown", (e) => {
       if (document.body.classList.contains("modal-open")) return;
       const rakanSec = document.getElementById("rakan");
@@ -383,7 +408,12 @@
     init() {
       buildCarouselDOM();
       bindEvents();
-      // Initial position calculation after layout settles
+      requestAnimationFrame(() => {
+        updateCarouselPosition(false);
+      });
+    },
+    refreshLanguage() {
+      buildCarouselDOM();
       requestAnimationFrame(() => {
         updateCarouselPosition(false);
       });

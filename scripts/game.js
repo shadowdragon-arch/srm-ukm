@@ -2,16 +2,8 @@
  * ============================================================================
  * SRM UKM - "TEKA RAKAN!" EMOJI GAME ENGINE (game.js)
  * ============================================================================
- * Ciri-ciri Permainan:
- * - Memilih 15 soalan secara rawak pada setiap sesi (tiada ulangan dalam satu sesi).
- * - Memaparkan DUA emoji sebagai petunjuk bagi setiap soalan.
- * - Menyediakan 9 pilihan portfolio Rakan dalam susunan rawak.
- * - Portfolio kesembilan hanya dijadikan soalan aktif apabila telah dikonfigurasi.
- * - Maklum balas segera dengan penerangan fungsi Rakan yang betul.
- * - Sistem pencapaian:
- *   0–5: Teruskan Meneroka!
- *   6–10: Anda Mula Mengenali Rakan!
- *   11–15: Juara Rakan!
+ * Menyokong Dwi-Bahasa (Bahasa Melayu & English) secara langsung pada setiap
+ * skrin permainan, petunjuk, maklum balas dan keputusan akhir.
  */
 
 (function () {
@@ -21,6 +13,9 @@
   let currentQuestionIdx = 0;
   let score = 0;
   let hasAnsweredCurrent = false;
+  let lastWasCorrect = false;
+  let currentShuffledOptions = [];
+  let lastSelectedRakanId = null;
 
   // DOM Elements
   let screenWelcome = null;
@@ -43,6 +38,28 @@
   let finalScoreTotalEl = null;
   let finalTierBadgeEl = null;
   let finalTierMessageEl = null;
+
+  function getLang() {
+    return (window.SRM_APP && window.SRM_APP.getLang()) || "ms";
+  }
+
+  function localize(field) {
+    if (!field) return "";
+    if (typeof field === "string") return field;
+    const lang = getLang();
+    return field[lang] || field.ms || "";
+  }
+
+  function getDict() {
+    const lang = getLang();
+    return (
+      (window.SRM_CONFIG &&
+        window.SRM_CONFIG.i18n &&
+        window.SRM_CONFIG.i18n[lang] &&
+        window.SRM_CONFIG.i18n[lang].game) ||
+      {}
+    );
+  }
 
   function shuffleArray(arr) {
     const copy = [...arr];
@@ -70,7 +87,6 @@
     const allQuestions = window.GAME_QUESTIONS || [];
     const allowNinth = isNinthPortfolioReady();
 
-    // Filter out questions for the 9th portfolio unless configured
     const eligibleQuestions = allQuestions.filter((q) => {
       if (q.correctRakanId === "rakan-kesembilan" && !allowNinth) {
         return false;
@@ -86,40 +102,51 @@
     currentQuestionIdx = 0;
     score = 0;
     hasAnsweredCurrent = false;
+    lastSelectedRakanId = null;
 
     switchScreen(screenPlay);
-    renderCurrentQuestion();
+    prepareNewQuestion();
   }
 
   function renderOptionLogo(rakan) {
+    const nameText = localize(rakan.name);
     return `
       <div class="game-opt-logo">
         <img
           src="${rakan.logo}"
-          alt="${rakan.name}"
+          alt="${nameText}"
           loading="lazy"
-          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
         />
-        <span style="display: none; font-size: 1.35rem;" aria-hidden="true">${rakan.fallbackEmoji}</span>
+        <span
+          style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 800; color: #0f172a;"
+          aria-hidden="true"
+        >
+          ${rakan.number}
+        </span>
       </div>
     `;
   }
 
-  function renderCurrentQuestion() {
-    const q = sessionQuestions[currentQuestionIdx];
-    if (!q) {
-      showFinalResults();
-      return;
-    }
-
+  function prepareNewQuestion() {
     hasAnsweredCurrent = false;
+    lastSelectedRakanId = null;
+    currentShuffledOptions = shuffleArray(window.RAKAN_DATA || []);
+    renderCurrentQuestionState();
+  }
+
+  function renderCurrentQuestionState() {
+    const q = sessionQuestions[currentQuestionIdx];
+    const dict = getDict();
+    if (!q) return;
+
     const total = sessionQuestions.length;
 
     if (progressTextEl) {
-      progressTextEl.textContent = `Soalan ${currentQuestionIdx + 1} / ${total}`;
+      progressTextEl.textContent = `${dict.questionCounter || "Soalan"} ${currentQuestionIdx + 1} / ${total}`;
     }
     if (scoreTextEl) {
-      scoreTextEl.textContent = `Skor: ${score}`;
+      scoreTextEl.textContent = `${dict.scoreLabel || "Skor"}: ${score}`;
     }
     if (progressBarEl) {
       const pct = ((currentQuestionIdx + 1) / total) * 100;
@@ -128,119 +155,125 @@
 
     if (emojiFirstEl) emojiFirstEl.textContent = q.emojis[0] || "✨";
     if (emojiSecondEl) emojiSecondEl.textContent = q.emojis[1] || "🌟";
-    if (clueHintEl) clueHintEl.textContent = `Petunjuk: ${q.clueLabel}`;
-
-    // Hide feedback panel
-    if (feedbackBoxEl) {
-      feedbackBoxEl.className = "game-feedback-box";
+    if (clueHintEl) {
+      clueHintEl.textContent = `${dict.cluePrefix || "Petunjuk"}: ${localize(q.clueLabel)}`;
     }
 
-    // Randomise the 9 Rakan portfolio options
-    const rakanList = window.RAKAN_DATA || [];
     const allowNinth = isNinthPortfolioReady();
-    const shuffledOptions = shuffleArray(rakanList);
+    if (!currentShuffledOptions.length) {
+      currentShuffledOptions = shuffleArray(window.RAKAN_DATA || []);
+    }
 
     if (optionsGridEl) {
-      optionsGridEl.innerHTML = shuffledOptions
+      optionsGridEl.innerHTML = currentShuffledOptions
         .map((rakan) => {
           const isPlaceholderNinth = rakan.id === "rakan-kesembilan" && !allowNinth;
+          const displayTitle = isPlaceholderNinth
+            ? localize(rakan.shortName)
+            : localize(rakan.name);
+          const displaySub = isPlaceholderNinth
+            ? dict.lockedSlotText || "Menunggu Konfigurasi"
+            : localize(rakan.shortName);
+
+          let stateClass = "";
+          if (hasAnsweredCurrent) {
+            if (rakan.id === q.correctRakanId) {
+              stateClass = "is-correct";
+            } else if (rakan.id === lastSelectedRakanId && !lastWasCorrect) {
+              stateClass = "is-wrong";
+            }
+          }
+
           return `
             <button
               type="button"
-              class="game-option-btn ${isPlaceholderNinth ? "is-locked-placeholder" : ""}"
+              class="game-option-btn ${isPlaceholderNinth ? "is-locked-placeholder" : ""} ${stateClass}"
               data-answer-rakan="${rakan.id}"
-              ${isPlaceholderNinth ? 'disabled title="Portfolio kesembilan belum dikonfigurasi"' : ""}
+              ${isPlaceholderNinth || hasAnsweredCurrent ? "disabled" : ""}
             >
               ${renderOptionLogo(rakan)}
               <div>
-                <div class="game-opt-name">${rakan.shortName === "Kesembilan" && !allowNinth ? "Rakan Ke-9" : rakan.name}</div>
-                <span class="game-opt-sub">${
-                  isPlaceholderNinth ? "Menunggu Konfigurasi" : rakan.shortName
-                }</span>
+                <div class="game-opt-name">${displayTitle}</div>
+                <span class="game-opt-sub">${displaySub}</span>
               </div>
             </button>
           `;
         })
         .join("");
     }
+
+    if (feedbackBoxEl && feedbackTitleEl && feedbackDescEl) {
+      if (hasAnsweredCurrent) {
+        feedbackBoxEl.className = `game-feedback-box show ${lastWasCorrect ? "correct" : "wrong"}`;
+        feedbackTitleEl.textContent = lastWasCorrect
+          ? dict.correctTitle || "BETUL!"
+          : dict.wrongTitle || "Belum tepat!";
+        feedbackDescEl.textContent = localize(q.explanation);
+        if (nextQuestionBtn) {
+          const isLast = currentQuestionIdx >= sessionQuestions.length - 1;
+          nextQuestionBtn.textContent = isLast
+            ? dict.finishBtn || "Lihat Keputusan Akhir"
+            : `${dict.nextBtn || "Soalan Seterusnya"} →`;
+        }
+      } else {
+        feedbackBoxEl.className = "game-feedback-box";
+      }
+    }
   }
 
-  function handleSelectAnswer(selectedRakanId, btnElement) {
+  function handleSelectAnswer(selectedRakanId) {
     if (hasAnsweredCurrent) return;
     const q = sessionQuestions[currentQuestionIdx];
     if (!q) return;
 
     hasAnsweredCurrent = true;
-    const isCorrect = selectedRakanId === q.correctRakanId;
+    lastSelectedRakanId = selectedRakanId;
+    lastWasCorrect = selectedRakanId === q.correctRakanId;
 
-    if (isCorrect) {
+    if (lastWasCorrect) {
       score += 1;
     }
 
-    if (scoreTextEl) {
-      scoreTextEl.textContent = `Skor: ${score}`;
-    }
-
-    // Highlight buttons
-    const allOptionBtns = optionsGridEl
-      ? Array.from(optionsGridEl.querySelectorAll(".game-option-btn"))
-      : [];
-
-    allOptionBtns.forEach((btn) => {
-      const rId = btn.getAttribute("data-answer-rakan");
-      btn.disabled = true;
-      if (rId === q.correctRakanId) {
-        btn.classList.add("is-correct");
-      } else if (btn === btnElement && !isCorrect) {
-        btn.classList.add("is-wrong");
-      }
-    });
-
-    // Show immediate educational feedback
-    if (feedbackBoxEl && feedbackTitleEl && feedbackDescEl) {
-      feedbackBoxEl.className = `game-feedback-box show ${isCorrect ? "correct" : "wrong"}`;
-      feedbackTitleEl.textContent = isCorrect
-        ? "BETUL! Hebat, anda mengenali fungsi Rakan ini."
-        : "Belum tepat! Cuba lagi dan kenali fungsi Rakan tersebut.";
-      feedbackDescEl.textContent = q.explanation;
-    }
-
+    renderCurrentQuestionState();
     if (nextQuestionBtn) {
-      const isLast = currentQuestionIdx >= sessionQuestions.length - 1;
-      nextQuestionBtn.textContent = isLast ? "Lihat Keputusan Akhir" : "Soalan Seterusnya →";
       nextQuestionBtn.focus();
     }
   }
 
   function getAchievementTier(finalScore) {
+    const dict = getDict();
     if (finalScore >= 11) {
       return {
-        badge: "🏆 Juara Rakan! (11–15)",
-        message:
-          "Syabas! Anda mempunyai kefahaman yang sangat mendalam tentang peranan, fungsi dan gaya hidup setiap portfolio Rakan Muda di SRM UKM."
+        badge: dict.tierHighBadge || "Juara Rakan! (11–15)",
+        message: dict.tierHighMsg || ""
       };
     }
     if (finalScore >= 6) {
       return {
-        badge: "🌟 Anda Mula Mengenali Rakan! (6–10)",
-        message:
-          "Usaha yang baik! Anda sudah mengenali sebahagian besar fungsi Rakan. Terokai slaid Rakan di atas untuk menguasai kesemua portfolio."
+        badge: dict.tierMidBadge || "Anda Mula Mengenali Rakan! (6–10)",
+        message: dict.tierMidMsg || ""
       };
     }
     return {
-      badge: "🚀 Teruskan Meneroka! (0–5)",
-      message:
-        "Permulaan yang baik! Setiap Rakan mempunyai fokus unik tersendiri. Jom terokai seksyen Rakan dan cuba bermain sekali lagi!"
+      badge: dict.tierLowBadge || "Teruskan Meneroka! (0–5)",
+      message: dict.tierLowMsg || ""
     };
   }
 
   function showFinalResults() {
     switchScreen(screenResult);
-    const total = sessionQuestions.length;
+    renderFinalResultsText();
+  }
+
+  function renderFinalResultsText() {
+    const dict = getDict();
+    const total = sessionQuestions.length || TOTAL_QUESTIONS_PER_ROUND;
     const tier = getAchievementTier(score);
 
     if (finalScoreNumEl) finalScoreNumEl.textContent = String(score);
-    if (finalScoreTotalEl) finalScoreTotalEl.textContent = `daripada ${total} soalan`;
+    if (finalScoreTotalEl) {
+      finalScoreTotalEl.textContent = `${dict.outOfText || "daripada"} ${total} ${dict.questionsWord || "soalan"}`;
+    }
     if (finalTierBadgeEl) finalTierBadgeEl.textContent = tier.badge;
     if (finalTierMessageEl) finalTierMessageEl.textContent = tier.message;
   }
@@ -283,7 +316,7 @@
         const btn = e.target.closest("[data-answer-rakan]");
         if (!btn || btn.disabled) return;
         const selectedId = btn.getAttribute("data-answer-rakan");
-        handleSelectAnswer(selectedId, btn);
+        handleSelectAnswer(selectedId);
       });
     }
 
@@ -291,7 +324,7 @@
       nextQuestionBtn.addEventListener("click", () => {
         if (currentQuestionIdx < sessionQuestions.length - 1) {
           currentQuestionIdx += 1;
-          renderCurrentQuestion();
+          prepareNewQuestion();
         } else {
           showFinalResults();
         }
@@ -300,6 +333,13 @@
   }
 
   window.SRM_GAME = {
-    init
+    init,
+    refreshLanguage() {
+      if (screenPlay && screenPlay.classList.contains("active")) {
+        renderCurrentQuestionState();
+      } else if (screenResult && screenResult.classList.contains("active")) {
+        renderFinalResultsText();
+      }
+    }
   };
 })();
