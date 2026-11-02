@@ -4,16 +4,15 @@
  * ============================================================================
  * Mengawal:
  * - Penukaran Bahasa Segera: Bahasa Melayu (BM) <-> English (EN)
+ * - Pengesanan Pintar Format Gambar (.png / .jpg / .jpeg / .webp)
  * - Paparan Logo Rasmi Rakan pada Hero Showcase, Preview Chips & Filter Bar
- * - Navigasi Responsif & Scroll Spy
- * - Galeri Aktiviti, Penapis Kategori & Modal Terperinci
- * - Pautan Rasmi Instagram (@srmukm) & TikTok (@srmukm)
+ * - Galeri Aktiviti Rasmi SRM UKM, Penapis Kategori & Modal Terperinci
  */
 
 (function () {
   let currentLang = "ms";
   let activeFilterRakanId = "all";
-  let openModalContext = null; // { type: 'rakan' | 'aktiviti', id: string }
+  let openModalContext = null;
 
   try {
     const saved = localStorage.getItem("srm_ukm_lang");
@@ -21,7 +20,7 @@
       currentLang = saved;
     }
   } catch (e) {
-    // Ignore storage access errors in restricted environments
+    // Ignore storage errors
   }
 
   function getLang() {
@@ -49,6 +48,16 @@
   }
 
   function getRakanById(rakanId) {
+    if (rakanId === "srm-ukm") {
+      return {
+        id: "srm-ukm",
+        name: { ms: "SRM UKM (Rasmi)", en: "SRM UKM (Official)" },
+        shortName: { ms: "SRM UKM", en: "SRM UKM" },
+        logo: "./gambar/logo/srm-logo.png",
+        accentColor: "#119446",
+        accentLight: "#E8F7EE"
+      };
+    }
     return (window.RAKAN_DATA || []).find((r) => r.id === rakanId) || null;
   }
 
@@ -57,6 +66,23 @@
     return list.sort((a, b) => new Date(b.date) - new Date(a.date));
   }
 
+  // Global helper to automatically try alternative extensions (.jpg, .jpeg, .png, .webp)
+  window.SRM_TRY_NEXT_IMG = function (imgEl) {
+    const rawList = imgEl.getAttribute("data-alt-srcs") || "";
+    const list = rawList ? rawList.split("|").filter(Boolean) : [];
+    const idx = parseInt(imgEl.getAttribute("data-alt-idx") || "0", 10);
+
+    if (idx < list.length) {
+      imgEl.setAttribute("data-alt-idx", String(idx + 1));
+      imgEl.src = list[idx];
+    } else {
+      imgEl.style.display = "none";
+      if (imgEl.nextElementSibling) {
+        imgEl.nextElementSibling.style.display = "flex";
+      }
+    }
+  };
+
   /* --------------------------------------------------------------------------
    * 1. DUAL-LANGUAGE (BM / EN) ENGINE
    * -------------------------------------------------------------------------- */
@@ -64,7 +90,6 @@
     document.documentElement.lang = currentLang === "en" ? "en" : "ms";
     const dict = (window.SRM_CONFIG && window.SRM_CONFIG.i18n && window.SRM_CONFIG.i18n[currentLang]) || {};
 
-    // Update all DOM nodes with data-i18n="section.key"
     const nodes = document.querySelectorAll("[data-i18n]");
     nodes.forEach((node) => {
       const keyPath = node.getAttribute("data-i18n");
@@ -74,7 +99,6 @@
       }
     });
 
-    // Update segmented BM | EN button active pills
     const pillMs = document.getElementById("lang-opt-ms");
     const pillEn = document.getElementById("lang-opt-en");
     const langBtn = document.getElementById("lang-switch-btn");
@@ -103,7 +127,6 @@
     if (window.SRM_GAME) window.SRM_GAME.refreshLanguage();
     renderSocialLinks();
 
-    // If a modal is currently open, re-render it in the new language
     if (openModalContext && document.body.classList.contains("modal-open")) {
       if (openModalContext.type === "rakan") {
         openRakanModal(openModalContext.id);
@@ -182,7 +205,6 @@
   function renderHomePreviews() {
     const rakanList = window.RAKAN_DATA || [];
 
-    // 1. Hero Interactive 3x3 Official Rakan Logo Showcase (NO EMOJIS!)
     const orbitGrid = document.getElementById("hero-orbit-grid");
     if (orbitGrid) {
       orbitGrid.innerHTML = rakanList
@@ -216,7 +238,6 @@
         .join("");
     }
 
-    // 2. Home Rakan Preview Chips with Official Logos
     const previewChipsEl = document.getElementById("home-rakan-preview-chips");
     if (previewChipsEl) {
       previewChipsEl.innerHTML = rakanList
@@ -246,7 +267,6 @@
         .join("");
     }
 
-    // 3. Home Latest Activity Preview (Top 3 latest activities)
     const homeActGrid = document.getElementById("home-latest-activities-grid");
     if (homeActGrid) {
       const latestThree = getSortedActivities().slice(0, 3);
@@ -272,29 +292,27 @@
    * -------------------------------------------------------------------------- */
   function createActivityCardHTML(act) {
     const dict = getI18nSection("aktiviti");
-    const rakan = getRakanById(act.rakanId) || {
-      name: { ms: "Program SRM UKM", en: "SRM UKM Programme" },
-      shortName: { ms: "SRM", en: "SRM" },
-      logo: "./gambar/logo/srm-logo.png",
-      accentColor: "#163F86",
-      accentLight: "#EBF1FA"
-    };
+    const rakan = getRakanById(act.rakanId) || getRakanById("srm-ukm");
 
     const titleText = localize(act.title);
     const dateText = localize(act.displayDate) || act.date;
     const locText = localize(act.location);
     const descText = localize(act.shortDescription);
-    const rakanNameText = localize(rakan.name);
+    const badgeText = act.badgeLabel ? localize(act.badgeLabel) : localize(rakan.name);
+    const collabText = localize(act.collab);
+    const altSrcsAttr = (act.altImages || []).join("|");
 
     return `
       <article class="aktiviti-card">
         <div class="aktiviti-img-wrap">
           <img
             src="${act.image}"
+            data-alt-srcs="${altSrcsAttr}"
+            data-alt-idx="0"
             alt="${titleText}"
             class="aktiviti-cover-img"
             loading="lazy"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            onerror="window.SRM_TRY_NEXT_IMG(this);"
           />
           <div
             class="aktiviti-img-fallback"
@@ -304,26 +322,22 @@
               src="${rakan.logo}"
               alt=""
               class="aktiviti-fallback-emblem"
+              style="width: 72px; height: 72px;"
               onerror="this.style.display='none';"
             />
-            <span style="font-size: 0.78rem; font-weight: 700; color: var(--ink-primary);">
-              ${dict.missingImgTitle || "Pratonton Ruang Gambar"}
+            <span style="font-size: 0.84rem; font-weight: 800; color: ${rakan.accentColor}; letter-spacing: -0.01em;">
+              ${badgeText}
             </span>
-            <span style="font-size: 0.7rem; color: var(--ink-muted); margin-top: 2px;">
-              ${dict.missingImgSub || "Letakkan fail di"} <code>${act.image}</code>
+            <span style="font-size: 0.74rem; color: var(--ink-secondary); margin-top: 3px; max-width: 240px;">
+              ${locText}
             </span>
           </div>
           <span
             class="aktiviti-badge-floating"
             style="--badge-color: ${rakan.accentColor};"
           >
-            ${rakanNameText}
+            ${badgeText}
           </span>
-          ${
-            act.isSample
-              ? `<span class="aktiviti-sample-tag">${dict.sampleBadge || "CONTOH SUSUN ATUR"}</span>`
-              : ""
-          }
         </div>
 
         <div class="aktiviti-body">
@@ -345,8 +359,19 @@
               <span>${locText}</span>
             </span>
           </div>
+
           <h3 class="aktiviti-title">${titleText}</h3>
+
+          ${
+            collabText
+              ? `<div style="font-size: 0.78rem; font-weight: 700; color: ${rakan.accentColor}; margin-bottom: 10px;">
+                   🤝 ${collabText}
+                 </div>`
+              : ""
+          }
+
           <p class="aktiviti-desc">${descText}</p>
+
           <button
             type="button"
             class="aktiviti-link-btn"
@@ -377,6 +402,8 @@
     }
 
     if (filterBar) {
+      const srmLabel = currentLang === "en" ? "Official SRM UKM" : "SRM UKM (Rasmi)";
+
       const allBtnHTML = `
         <button
           type="button"
@@ -385,14 +412,25 @@
         >
           <span>${dict.filterAll || "Semua Aktiviti"}</span>
         </button>
+        <button
+          type="button"
+          class="filter-btn ${activeFilterRakanId === "srm-ukm" ? "active" : ""}"
+          data-filter-rakan="srm-ukm"
+        >
+          <img
+            src="./gambar/logo/srm-logo.png"
+            alt=""
+            class="filter-btn-logo"
+            onerror="this.style.display='none';"
+          />
+          <span>${srmLabel}</span>
+        </button>
       `;
 
       const rakanBtnsHTML = rakanList
+        .filter((r) => r.isConfigured)
         .map((r) => {
-          const label =
-            r.id === "rakan-kesembilan" && !r.isConfigured
-              ? localize(r.shortName)
-              : localize(r.name);
+          const label = localize(r.name);
           return `
             <button
               type="button"
@@ -418,13 +456,17 @@
       const filtered =
         activeFilterRakanId === "all"
           ? sortedActivities
-          : sortedActivities.filter((a) => a.rakanId === activeFilterRakanId);
+          : sortedActivities.filter(
+              (a) =>
+                a.rakanId === activeFilterRakanId ||
+                (Array.isArray(a.categories) && a.categories.includes(activeFilterRakanId))
+            );
 
       if (!filtered.length) {
         gridEl.innerHTML = `
           <div style="grid-column: 1 / -1; text-align: center; padding: 56px 24px; background: var(--bg-surface); border-radius: var(--radius-md); border: 1px dashed var(--border-strong);">
             <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 8px;">
-              ${dict.emptyTitle || "Tiada Rekod Aktiviti"}
+              ${dict.emptyTitle || "Tiada Rekod Aktiviti Bagi Kategori Ini"}
             </h3>
             <p style="font-size: 0.92rem; color: var(--ink-secondary); max-width: 520px; margin: 0 auto 20px;">
               ${dict.emptyDesc || ""}
@@ -626,59 +668,66 @@
     openModalContext = { type: "aktiviti", id: actId };
 
     const dict = getI18nSection("aktiviti");
-    const rakan = getRakanById(act.rakanId) || {
-      name: { ms: "SRM UKM", en: "SRM UKM" },
-      logo: "./gambar/logo/srm-logo.png",
-      accentColor: "#163F86",
-      accentLight: "#EBF1FA"
-    };
+    const rakan = getRakanById(act.rakanId) || getRakanById("srm-ukm");
 
     const titleText = localize(act.title);
     const dateText = localize(act.displayDate) || act.date;
     const locText = localize(act.location);
+    const collabText = localize(act.collab);
     const shortDesc = localize(act.shortDescription);
     const fullDesc = localize(act.fullDescription);
     const highlightsArr = localize(act.highlights) || [];
-    const rakanNameText = localize(rakan.name);
+    const badgeText = act.badgeLabel ? localize(act.badgeLabel) : localize(rakan.name);
+    const altSrcsAttr = (act.altImages || []).join("|");
 
     const html = `
       <div style="margin-bottom: 24px;">
         <span
           style="display: inline-block; font-size: 0.74rem; font-weight: 800; padding: 5px 12px; border-radius: 999px; background: ${rakan.accentLight}; color: ${rakan.accentColor}; margin-bottom: 12px;"
         >
-          ${rakanNameText}
+          ${badgeText}
         </span>
         <h2 style="font-size: clamp(1.5rem, 2.6vw, 2.05rem); font-weight: 800; margin-bottom: 12px;">
           ${titleText}
         </h2>
-        <div style="display: flex; flex-wrap: wrap; gap: 16px; font-size: 0.88rem; font-weight: 600; color: var(--ink-muted);">
-          <span>${dateText}</span>
+        <div style="display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.88rem; font-weight: 600; color: var(--ink-muted);">
+          <span>📅 ${dateText}</span>
           <span>•</span>
-          <span>${locText}</span>
+          <span>📍 ${locText}</span>
         </div>
+        ${
+          collabText
+            ? `<div style="margin-top: 10px; font-size: 0.86rem; font-weight: 700; color: ${rakan.accentColor};">
+                 🤝 ${collabText}
+               </div>`
+            : ""
+        }
       </div>
 
       <div style="aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: var(--bg-canvas); margin-bottom: 24px; border: 1px solid var(--border-hairline);">
         <img
           src="${act.image}"
+          data-alt-srcs="${altSrcsAttr}"
+          data-alt-idx="0"
           alt="${titleText}"
           style="width: 100%; height: 100%; object-fit: cover;"
-          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          onerror="window.SRM_TRY_NEXT_IMG(this);"
         />
         <div style="display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; background: ${rakan.accentLight};">
           <img
             src="${rakan.logo}"
             alt=""
-            style="width: 68px; height: 68px; border-radius: 50%; background: #fff; padding: 4px; margin-bottom: 10px; object-fit: contain;"
+            style="width: 76px; height: 76px; border-radius: 50%; background: #fff; padding: 4px; margin-bottom: 12px; object-fit: contain; box-shadow: var(--shadow-sm);"
             onerror="this.style.display='none';"
           />
-          <strong style="font-size: 0.95rem;">${dict.missingImgTitle || "Ruang Gambar"} (${act.image})</strong>
+          <strong style="font-size: 1rem; color: ${rakan.accentColor};">${titleText}</strong>
+          <span style="font-size: 0.82rem; color: var(--ink-secondary); margin-top: 4px;">${locText}</span>
         </div>
       </div>
 
       <div style="margin-bottom: 24px;">
         <h3 style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-muted); margin-bottom: 8px;">
-          ${dict.modalOverviewLabel || "Ringkasan & Butiran Program"}
+          ${dict.modalOverviewLabel || "Impak & Ringkasan Program"}
         </h3>
         <p style="font-size: 1rem; color: var(--ink-primary); font-weight: 500; line-height: 1.72; margin-bottom: 12px;">
           ${shortDesc}
@@ -693,7 +742,7 @@
           ? `
         <div style="background: var(--bg-canvas); border: 1px solid var(--border-hairline); padding: 20px 24px; border-radius: 16px; margin-bottom: 24px;">
           <h4 style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-muted); margin-bottom: 10px;">
-            ${dict.modalHighlightsLabel || "Sorotan Utama"}
+            ${dict.modalHighlightsLabel || "Impak & Sorotan Utama"}
           </h4>
           <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
             ${highlightsArr
